@@ -4,12 +4,12 @@ import pandas as pd
 
 class Node:
     def __init__(self, key: float, payload: Dict[str, Any]):
-        self.key = float(key)                    # MÉTRICA: media de cambio de temperatura
-        self.data = payload                      # {ISO3, Country, mean_change, series, ...}
+        self.key = float(key)                   
+        self.data = payload                    
         self.left: Optional["Node"] = None
         self.right: Optional["Node"] = None
         self.parent: Optional["Node"] = None
-        self.height = 1
+        self.height = 0
 
     @property
     def balance_factor(self) -> int:
@@ -95,7 +95,7 @@ class AVLTree:
 
 
     def insert(self, key: float, payload: Dict[str, Any]) -> None:
-        """Inserta por la MÉTRICA (media). Si hay empate exacto, empuja a la derecha con epsilon."""
+
         def _ins(r: Optional[Node], k: float, p: Dict[str, Any]) -> Node:
             if not r:
                 return Node(k, p)
@@ -104,7 +104,7 @@ class AVLTree:
             elif k > r.key:
                 r.right = _ins(r.right, k, p); r.right.parent = r
             else:
-                # mismo valor de media: mantener propiedad BST con un pequeño desplazamiento
+
                 r.right = _ins(r.right, k + 1e-9, p); r.right.parent = r
             return self._rebalance(r)
         self.root = _ins(self.root, float(key), payload)
@@ -127,12 +127,12 @@ class AVLTree:
                 r.right = _del(r.right, k)
                 if r.right: r.right.parent = r
             else:
-                # nodo encontrado
+
                 if not r.left or not r.right:
                     child = r.left if r.left else r.right
                     if child: child.parent = r.parent
                     return child
-                # dos hijos: usar sucesor en in-order
+
                 succ = self._min_node(r.right)
                 r.key, r.data = succ.key, succ.data
                 r.right = _del(r.right, succ.key)
@@ -384,3 +384,75 @@ class AVLTree:
             print(f"{i:2d}. {iso}: {temp_media:.3f}°C")
         
         print(f"\nTotal: {len(resultados)} países")
+
+
+    def delete_all_by_key(self, key: float, tol: float = 1e-9) -> int:
+        removed = 0
+        key = round(key, 6)   
+        while True:
+            node = self.find_by_key_approx(key, tol=tol)
+            if not node:
+                break
+            self.delete(node.key)
+            removed += 1
+        return removed
+    
+    def insertar_manual(self) -> None:
+        
+        
+        while True:
+            iso3 = input("Ingrese el código ISO3 del país (3 letras): ").strip().upper()
+            if len(iso3) == 3 and iso3.isalpha():
+                if self.find_by_iso3(iso3):
+                    print(f"El código ISO3 {iso3} ya existe en el árbol.")
+                    continuar = input("¿Desea intentar con otro código? (s/n): ").lower()
+                    if continuar != 's':
+                        return
+                else:
+                    break
+            else:
+                print(" El ISO3 debe tener exactamente 3 letras.")
+        
+        
+        country = input("Ingrese el nombre del país: ").strip()
+        
+        print("\nIngrese las temperaturas para los años 1961-2022 (62 valores):")
+        print("(Deje vacío para omitir un año)")
+        
+        series = {}
+        temperaturas_validas = []
+        años = list(range(1961, 2023))
+        
+        for año in años:
+            while True:
+                try:
+                    temp_input = input(f"Temperatura {año}: ").strip()
+                    if temp_input == "":
+                        series[str(año)] = None
+                        break
+                    else:
+                        temperatura = float(temp_input)
+                        series[str(año)] = temperatura
+                        temperaturas_validas.append(temperatura)
+                        break
+                except ValueError:
+                    print("Ingrese un número válido o deje vacío para omitir")
+        
+        if temperaturas_validas:
+            mean_change = sum(temperaturas_validas) / len(temperaturas_validas)
+            print(f"Media : {mean_change:.3f}°C (basada en {len(temperaturas_validas)} años)")
+        else:
+            mean_change = 0.0
+            print("No se ingresaron temperaturas válidas, media = 0.0")
+        
+        payload = {
+            "ISO3": iso3,
+            "Country": country,
+            "mean_change": mean_change,
+            "series": series
+        }
+        
+        self.insert(mean_change, payload)
+        print(f"{country} ({iso3}) insertado.")
+        print(f"   - Media: {mean_change:.3f}°C")
+        print(f"   - Años con datos: {len(temperaturas_validas)}/{len(años)}")

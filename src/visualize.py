@@ -2,7 +2,7 @@ from graphviz import Digraph
 from typing import Optional
 from src.avl_tree import Node
 
- #esta parte del codigo es la que se encarga de graficar el arbol
+
 
 def draw_tree(root: Optional[Node], out_path: str = "tree"):
 
