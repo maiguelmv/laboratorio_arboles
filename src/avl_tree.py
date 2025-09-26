@@ -243,11 +243,11 @@ class AVLTree:
         if año < 1961 or año > 2022:
             raise ValueError(f"Año {año} fuera de rango (1961-2022)")
 
-        año_str = str(año)  # Convertir a string para buscar en el diccionario
+        año_str = str(año)
         
         temperaturas_año = []
         for nodo in nodos:
-            series = nodo.data.get("series", {})  # Ahora es un diccionario
+            series = nodo.data.get("series", {})
             if año_str in series:
                 temp = series[año_str]
                 if not pd.isna(temp):
@@ -278,12 +278,12 @@ class AVLTree:
         if año < 1961 or año > 2022:
             raise ValueError(f"Año {año} fuera de rango (1961-2022)")
         
-        año_str = str(año)  # Convertir a string
+        año_str = str(año)
         
         todas_temperaturas = []
         for nodo in nodos:
             series = nodo.data.get("series", {})
-            for temp in series.values():  # Iterar sobre todos los valores del diccionario
+            for temp in series.values():
                 if not pd.isna(temp):
                     todas_temperaturas.append(temp)
         
@@ -321,14 +321,9 @@ class AVLTree:
             print(f"INCISO A - AÑO {año}")
             print(f"{'='*60}")
             
-            # DEBUG CRÍTICO - Ver qué retorna punto_4a
-            print(f"DEBUG: resultados = {resultados}")
-            print(f"DEBUG: tipo de resultados = {type(resultados)}")
-            print(f"DEBUG: longitud de resultados = {len(resultados)}")
             
             if not resultados:
                 print("No se encontraron resultados")
-                print("DEBUG: La lista 'resultados' está vacía")
                 return
             
             print(f"Promedio del año {año}: {resultados[0][2]:.3f}°C")

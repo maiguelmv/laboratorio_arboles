@@ -66,7 +66,6 @@ def menu():
     print("0) Salir")
     return input("Elige opción: ").strip()
 
-
 if __name__ == "__main__":
     tree, df, global_mean, per_year_mean = build_tree(CSV_PATH)
     print(f"Cargado. Países: {len(df)}")
