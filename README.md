@@ -17,7 +17,7 @@ El objetivo del laboratorio es implementar un **árbol AVL en Python** para gest
 
 
 
-### ⚙️ Requisitos y dependencias
+### Requisitos y dependencias
 
 Este proyecto está desarrollado en **Visual Studio Code (VSC)** con **Python 3.10+** y utiliza las siguientes librerías externas:
 
@@ -26,7 +26,7 @@ Este proyecto está desarrollado en **Visual Studio Code (VSC)** con **Python 3.
 - **graphviz** → visualización gráfica del árbol AVL
 
 
-### 📂 Estructura
+### Estructura
 ```
 ├── src/
 │ ├── init.py # Inicialización del paquete
